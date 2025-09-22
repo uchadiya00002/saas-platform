@@ -2,9 +2,13 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [develop, main]
   pull_request:
-    branches: [main]
+    branches: [develop, main]
+
+defaults:
+  run:
+    working-directory: .
 
 jobs:
   quality:
@@ -25,55 +29,60 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: --entrypoint redis-server
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: npm
+          node-version: '18'
+          cache: 'npm'
 
-      - name: Install root deps (eslint/prettier)
-        run: npm ci || true
+      # Install server dependencies
+      - name: Install server dependencies
+        working-directory: ./server
+        run: npm ci
 
-      - name: Install backend deps
-        run: |
-          cd server
-          npm ci
+      # Install client dependencies
+      - name: Install client dependencies
+        working-directory: ./client
+        run: npm ci
 
-      - name: Install frontend deps
-        run: |
-          cd client
-          npm ci
+      # Lint server code
+      - name: Lint server code
+        working-directory: ./server
+        run: npm run lint
 
-      - name: Run Lint
-        run: |
-          cd server && npm run lint
-          cd ../client && npm run lint
+      # Type check server code
+      - name: Type check server code
+        working-directory: ./server
+        run: npm run typecheck
 
-      - name: Run Type Check
-        run: |
-          cd server && npm run typecheck
-          cd ../client && npm run typecheck
-
-      - name: Run Backend Tests
+      # Run server tests
+      - name: Run server tests
+        working-directory: ./server
         env:
+          NODE_ENV: test
           DATABASE_URL: postgresql://postgres:password@localhost:5432/saas_db_test
+          REDIS_URL: redis://localhost:6379
         run: |
-          cd server
           npx prisma generate
           npx prisma migrate deploy
           npm test
 
-      - name: Run Frontend Tests
-        run: |
-          cd client
-          npm run test
+      # Run client tests
+      - name: Run client tests
+        working-directory: ./client
+        run: npm test
 
-      - name: Build Frontend
-        run: |
-          cd client
-          npm run build
+      # Build client
+      - name: Build client
+        working-directory: ./client
+        run: npm run build
