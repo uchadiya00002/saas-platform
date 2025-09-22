@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  email String @unique
+  name String?
+  passwordHash String?
+  role Role @default(USER)
+  stripeCustomerId String?
+  isEmailVerified Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  subscriptions Subscription[]
+  invoices Invoice[]
+}
+
+model Plan {
+  id Int @id @default(autoincrement())
+  name String
+  priceCents Int
+  currency String @default("usd")
+  interval String @default("month")
+  stripePriceId String?
+  features Json?
+  active Boolean @default(true)
+  createdAt DateTime @default(now())
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id Int @id @default(autoincrement())
+  userId Int
+  planId Int
+  stripeSubscriptionId String @unique
+  status String
+  startAt DateTime?
+  endAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id])
+  plan Plan @relation(fields: [planId], references: [id])
+}
+
+model Invoice {
+  id Int @id @default(autoincrement())
+  userId Int
+  stripeInvoiceId String?
+  amountCents Int
+  status String
+  pdfUrl String?
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id])
+}
+
+model WebhookEvent {
+  id Int @id @default(autoincrement())
+  stripeEventId String @unique
+  type String
+  payload Json
+  createdAt DateTime @default(now())
+  processedAt DateTime?
+}
