@@ -41,39 +41,39 @@ jobs:
 
       - name: Install backend deps
         run: |
-          cd backend
+          cd server
           npm ci
 
       - name: Install frontend deps
         run: |
-          cd frontend
+          cd client
           npm ci
 
       - name: Run Lint
         run: |
-          cd backend && npm run lint
-          cd ../frontend && npm run lint
+          cd server && npm run lint
+          cd ../client && npm run lint
 
       - name: Run Type Check
         run: |
-          cd backend && npm run typecheck
-          cd ../frontend && npm run typecheck
+          cd server && npm run typecheck
+          cd ../client && npm run typecheck
 
       - name: Run Backend Tests
         env:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/saas_db_test
         run: |
-          cd backend
+          cd server
           npx prisma generate
           npx prisma migrate deploy
           npm test
 
       - name: Run Frontend Tests
         run: |
-          cd frontend
+          cd client
           npm run test
 
       - name: Build Frontend
         run: |
-          cd frontend
+          cd client
           npm run build
