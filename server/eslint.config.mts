@@ -1,9 +1,14 @@
+// @ts-check
 import js from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
-import { defineConfig } from "eslint/config";
+import { fileURLToPath } from 'url';
+import path from 'path';
 
-export default defineConfig([
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default [
   // Base JavaScript and TypeScript config
   {
     files: ["**/*.ts"],
@@ -17,7 +22,7 @@ export default defineConfig([
       parser: tseslint.parser,
       parserOptions: {
         project: "./tsconfig.json",
-        tsconfigRootDir: import.meta.dirname,
+        tsconfigRootDir: __dirname,
       },
     },
     plugins: {
@@ -25,7 +30,7 @@ export default defineConfig([
     },
     rules: {
       ...js.configs.recommended.rules,
-      ...tseslint.configs.recommended.rules,
+      ...tseslint.configs.recommended,
       "@typescript-eslint/no-unused-vars": [
         "error",
         { 
@@ -38,4 +43,4 @@ export default defineConfig([
       "no-console": ["warn", { allow: ["warn", "error"] }],
     },
   },
-]);
+];
