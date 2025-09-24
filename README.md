@@ -64,7 +64,7 @@ A modern SaaS platform built with Node.js, TypeScript, React, PostgreSQL, and Do
 
 4. **Access the application**
    - Frontend: http://localhost:5173
-   - API Server: http://localhost:4000
+   - API Server: http://localhost:5000
    - PostgreSQL: localhost:5432
    - Redis: localhost:6379
 
