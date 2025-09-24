@@ -4,14 +4,15 @@ A modern SaaS platform built with Node.js, TypeScript, React, PostgreSQL, and Do
 
 ## 🚀 Features
 
+- **Database Management**: Prisma Studio for easy database management
 - User authentication and authorization
 - Subscription management
 - Role-based access control
 - RESTful API backend
 - Modern React frontend
-- Dockerized development and production environments
+- Dockerized development environment
 - PostgreSQL database with Prisma ORM
-- Redis for caching
+- Redis for caching and session management
 
 ## 🛠 Tech Stack
 
@@ -21,13 +22,11 @@ A modern SaaS platform built with Node.js, TypeScript, React, PostgreSQL, and Do
 - **ORM**: Prisma
 - **Caching**: Redis
 - **Containerization**: Docker
-- **CI/CD**: GitHub Actions (TBD)
 
 ## 📦 Prerequisites
 
 - Node.js 18+
 - Docker & Docker Compose
-- pnpm (recommended) or npm
 
 ## 🚀 Quick Start
 
@@ -43,28 +42,31 @@ A modern SaaS platform built with Node.js, TypeScript, React, PostgreSQL, and Do
 
 3. **Start the development environment**
    ```bash
+   # Install dependencies
+   npm install
+   
    # Start database and services
    docker compose up -d
    
-   # Install server dependencies
-   cd server
-   pnpm install
-   
    # Run database migrations
+   cd server
    npx prisma migrate dev
    
-   # Start the server in development mode
-   pnpm dev
+   # Start both client and server in development mode
+   cd ..
+   npm run dev
+   ```
    
-   # In a new terminal, start the client
-   cd ../client
-   pnpm install
-   pnpm dev
+4. **Access Prisma Studio (Optional)**
+   ```bash
+   cd server
+   npm run prisma:studio
    ```
 
-4. **Access the application**
+5. **Access the application**
    - Frontend: http://localhost:5173
-   - API Server: http://localhost:5000
+   - API Server: http://localhost:5001
+   - Prisma Studio: http://localhost:5555
    - PostgreSQL: localhost:5432
    - Redis: localhost:6379
 
