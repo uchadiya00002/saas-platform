@@ -69,7 +69,7 @@ This is the backend API server for the SaaS Platform, built with Node.js, Expres
    pnpm dev
    ```
 
-   The API will be available at http://localhost:4000
+   The API will be available at http://localhost:5000
 
 5. **Build for production**
    ```bash
@@ -135,7 +135,7 @@ docker build -t saas-platform-server .
 Run the container:
 
 ```bash
-docker run -p 4000:4000 saas-platform-server
+docker run -p 5000:5000 saas-platform-server
 ```
 
 ## 🔄 Database Migrations
